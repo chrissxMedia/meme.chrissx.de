@@ -18,20 +18,12 @@ function make() {
                 ctx.drawImage(src, 0, 0);
                 ctx.font = '60px Impact';
                 ctx.textAlign = 'center';
-                ctx.shadowColor = 'white';
+                ctx.strokeStyle = 'white';
 
-                ctx.shadowOffsetX = -5;
-                ctx.shadowOffsetY = -5;
-                ctx.fillText(upper, src.width / 2, 50);
-                ctx.fillText(lower, src.width / 2, src.height - 20);
-                ctx.shadowOffsetX = 5;
-                ctx.fillText(upper, src.width / 2, 50);
-                ctx.fillText(lower, src.width / 2, src.height - 20);
-                ctx.shadowOffsetX = -5;
-                ctx.shadowOffsetY = 5;
-                ctx.fillText(upper, src.width / 2, 50);
-                ctx.fillText(lower, src.width / 2, src.height - 20);
-                ctx.shadowOffsetX = 5;
+                ctx.lineWidth = 10;
+                ctx.strokeText(upper, src.width / 2, 50);
+                ctx.strokeText(lower, src.width / 2, src.height - 20);
+                ctx.lineWidth = 1;
                 ctx.fillText(upper, src.width / 2, 50);
                 ctx.fillText(lower, src.width / 2, src.height - 20);
 
