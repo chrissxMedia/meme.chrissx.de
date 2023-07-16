@@ -1,10 +1,10 @@
 function make() {
-        var canvas = document.getElementById('canvas');
-        var imgout = document.getElementById('out');
-        var inputFile = document.getElementById('rawimage').files[0];
-        var upper = document.getElementById('upper').value.toUpperCase();
-        var lower = document.getElementById('lower').value.toUpperCase();
-        var reader = new FileReader();
+        const canvas = document.getElementById('canvas')!;
+        const imgout = document.getElementById('out')!;
+        const inputFile = document.getElementById('rawimage').files[0];
+        const upper = document.getElementById('upper').value.toUpperCase();
+        const lower = document.getElementById('lower').value.toUpperCase();
+        const reader = new FileReader();
         reader.onload = async function() {
                 var dataURL = reader.result;
                 var src = new Image();
