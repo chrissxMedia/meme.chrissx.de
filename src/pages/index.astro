@@ -7,7 +7,7 @@ import { BaseLayout, Footer } from "cmdesigns";
     <input type="text" id="upper" name="upper" /><br />
     <input type="text" id="lower" name="lower" /><br />
     <input type="file" id="rawimage" name="rawimage" /><br />
-    <input type="button" value="make" id="make" /><br />
+    <input type="button" value="update" id="make" /><br />
     <canvas id="canvas"></canvas>
     <img id="out" />
     <script>
@@ -46,6 +46,9 @@ import { BaseLayout, Footer } from "cmdesigns";
             if (inputFile) reader.readAsDataURL(inputFile);
         }
         document.getElementById("make").addEventListener("click", make);
+        document.getElementById("rawimage").addEventListener("change", make);
+        document.getElementById("upper").addEventListener("change", make);
+        document.getElementById("lower").addEventListener("change", make);
     </script>
     <Footer start={2020} />
 </BaseLayout>
