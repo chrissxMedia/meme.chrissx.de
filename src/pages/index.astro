@@ -11,44 +11,45 @@ import { BaseLayout, Footer } from "cmdesigns";
     <canvas id="canvas"></canvas>
     <img id="out" />
     <script>
-        function make() {
-            const canvas = document.getElementById("canvas")!;
-            const imgout = document.getElementById("out")!;
-            const inputFile = document.getElementById("rawimage").files[0];
-            const upper = document.getElementById("upper").value.toUpperCase();
-            const lower = document.getElementById("lower").value.toUpperCase();
-            const reader = new FileReader();
-            reader.onload = async function () {
-                var dataURL = reader.result;
-                var src = new Image();
-                src.src = dataURL;
-                await src.decode();
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        const imgout = document.getElementById("out") as HTMLImageElement;
+        const rawimg = document.getElementById("rawimage") as HTMLInputElement;
+        const upper = document.getElementById("upper") as HTMLInputElement;
+        const lower = document.getElementById("lower") as HTMLInputElement;
 
-                canvas.setAttribute("width", src.width);
-                canvas.setAttribute("height", src.height);
-                var ctx = canvas.getContext("2d");
+        const reader = new FileReader();
+        reader.onload = async function () {
+            const dataURL = reader.result;
+            const src = new Image();
+            src.src = dataURL;
+            await src.decode();
 
-                ctx.drawImage(src, 0, 0);
-                ctx.font = "60px Impact";
-                ctx.textAlign = "center";
-                ctx.strokeStyle = "white";
+            canvas.setAttribute("width", src.width);
+            canvas.setAttribute("height", src.height);
+            const ctx = canvas.getContext("2d")!;
+            ctx.textAlign = "center";
+            ctx.strokeStyle = "white";
 
-                ctx.lineWidth = 10;
-                ctx.strokeText(upper, src.width / 2, 50);
-                ctx.strokeText(lower, src.width / 2, src.height - 20);
-                ctx.lineWidth = 1;
-                ctx.fillText(upper, src.width / 2, 50);
-                ctx.fillText(lower, src.width / 2, src.height - 20);
+            //const fontSize = src.width / Math.max(upper.length, lower.length) * 1.25;
+            const fontSize = 60;
+            ctx.drawImage(src, 0, 0);
+            ctx.font = fontSize + "px Impact";
 
-                imgout.src = canvas.toDataURL();
-                canvas.width = canvas.height = 0;
-            };
-            if (inputFile) reader.readAsDataURL(inputFile);
-        }
-        document.getElementById("make").addEventListener("click", make);
-        document.getElementById("rawimage").addEventListener("change", make);
-        document.getElementById("upper").addEventListener("change", make);
-        document.getElementById("lower").addEventListener("change", make);
+            function drawText(s: string, y: number) {
+                ctx.lineWidth = fontSize / 6;
+                ctx.strokeText(s, src.width / 2, y);
+                ctx.lineWidth = fontSize / 60;
+                ctx.fillText(s, src.width / 2, y);
+            }
+            drawText(upper.value.toUpperCase(), fontSize);
+            drawText(lower.value.toUpperCase(), src.height - fontSize / 3);
+
+            imgout.src = canvas.toDataURL();
+        };
+        const make = () =>
+            rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
+        document.getElementById("make")!.addEventListener("click", make);
+        [rawimg, upper, lower].map((x) => x.addEventListener("change", make));
     </script>
     <Footer start={2020} />
 </BaseLayout>
