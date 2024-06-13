@@ -29,27 +29,30 @@ import { BaseLayout, Footer } from "cmdesigns";
             const ctx = canvas.getContext("2d")!;
             ctx.textAlign = "center";
             ctx.strokeStyle = "white";
-
-            //const fontSize = src.width / Math.max(upper.length, lower.length) * 1.25;
-            const fontSize = 60;
             ctx.drawImage(src, 0, 0);
-            ctx.font = fontSize + "px Impact";
 
-            function drawText(s: string, y: number) {
+            function drawText(s: string, fontSize: number, y: number) {
+                ctx.font = fontSize + "px Impact";
                 ctx.lineWidth = fontSize / 6;
                 ctx.strokeText(s, src.width / 2, y);
                 ctx.lineWidth = fontSize / 60;
                 ctx.fillText(s, src.width / 2, y);
             }
-            drawText(upper.value.toUpperCase(), fontSize);
-            drawText(lower.value.toUpperCase(), src.height - fontSize / 3);
+
+            const ufs = src.width / upper.value.length * 1.25;
+            drawText(upper.value.toUpperCase(), ufs, ufs);
+
+            const lfs = src.width / lower.value.length * 1.25;
+            drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
 
             imgout.src = canvas.toDataURL();
         };
         const make = () =>
             rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
         document.getElementById("make")!.addEventListener("click", make);
-        [rawimg, upper, lower].map((x) => x.addEventListener("change", make));
+        [rawimg, upper, lower].forEach((x) => {
+            x.addEventListener("change", make);
+        });
     </script>
     <Footer start={2020} />
 </BaseLayout>
