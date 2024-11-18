@@ -10,52 +10,52 @@ import { BaseLayout, Footer } from "cmdesigns";
     <input type="button" value="update" id="make" /><br />
     <canvas id="canvas"></canvas>
     <img id="out" />
-    <script>
-        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-        const imgout = document.getElementById("out") as HTMLImageElement;
-        const rawimg = document.getElementById("rawimage") as HTMLInputElement;
-        const upper = document.getElementById("upper") as HTMLInputElement;
-        const lower = document.getElementById("lower") as HTMLInputElement;
-
-        const reader = new FileReader();
-        reader.onload = async function () {
-            const dataURL = reader.result;
-            const src = new Image();
-            src.src = dataURL;
-            await src.decode();
-
-            canvas.setAttribute("width", src.width);
-            canvas.setAttribute("height", src.height);
-            const ctx = canvas.getContext("2d")!;
-            ctx.textAlign = "center";
-            ctx.strokeStyle = "white";
-            ctx.drawImage(src, 0, 0);
-
-            function drawText(s: string, fontSize: number, y: number) {
-                ctx.font = fontSize + "px Impact";
-                ctx.lineWidth = fontSize / 6;
-                ctx.strokeText(s, src.width / 2, y);
-                ctx.lineWidth = fontSize / 60;
-                ctx.fillText(s, src.width / 2, y);
-            }
-
-            const ufs = src.width / upper.value.length * 1.25;
-            drawText(upper.value.toUpperCase(), ufs, ufs);
-
-            const lfs = src.width / lower.value.length * 1.25;
-            drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
-
-            imgout.src = canvas.toDataURL();
-        };
-        const make = () =>
-            rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
-        document.getElementById("make")!.addEventListener("click", make);
-        [rawimg, upper, lower].forEach((x) => {
-            x.addEventListener("change", make);
-        });
-    </script>
     <Footer start={2020} />
 </BaseLayout>
+
+<script>
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+    const imgout = document.getElementById("out") as HTMLImageElement;
+    const rawimg = document.getElementById("rawimage") as HTMLInputElement;
+    const upper = document.getElementById("upper") as HTMLInputElement;
+    const lower = document.getElementById("lower") as HTMLInputElement;
+
+    const reader = new FileReader();
+    reader.onload = async function () {
+        const dataURL = reader.result;
+        const src = new Image();
+        src.src = dataURL;
+        await src.decode();
+
+        canvas.setAttribute("width", src.width);
+        canvas.setAttribute("height", src.height);
+        const ctx = canvas.getContext("2d")!;
+        ctx.textAlign = "center";
+        ctx.strokeStyle = "white";
+        ctx.drawImage(src, 0, 0);
+
+        function drawText(s: string, fontSize: number, y: number) {
+            ctx.font = fontSize + "px Impact";
+            ctx.lineWidth = fontSize / 6;
+            ctx.strokeText(s, src.width / 2, y);
+            ctx.fillText(s, src.width / 2, y);
+        }
+
+        const ufs = (src.width / upper.value.length) * 1.25;
+        drawText(upper.value.toUpperCase(), ufs, ufs);
+
+        const lfs = (src.width / lower.value.length) * 1.25;
+        drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
+
+        imgout.src = canvas.toDataURL();
+    };
+    const make = () =>
+        rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
+    document.getElementById("make")!.addEventListener("click", make);
+    [rawimg, upper, lower].forEach((x) => {
+        x.addEventListener("change", make);
+    });
+</script>
 
 <style>
     input {
