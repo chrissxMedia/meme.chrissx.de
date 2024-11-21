@@ -1,0 +1,31 @@
+---
+export interface Props {
+    id: string;
+    placeholder?: string;
+}
+
+const { id, placeholder } = Astro.props;
+---
+
+<div {id}>
+    <input type="text" class="text" {placeholder} />
+    <input type="text" class="size" inputmode="numeric" placeholder="size" />
+    <!--<input type="text" class="width" inputmode="numeric" placeholder="width" /> -->
+</div>
+
+<style>
+    div {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5em;
+    }
+    .text {
+        width: 100%;
+    }
+    .size {
+        width: 3ch;
+    }
+    .width {
+        width: 4.5ch;
+    }
+</style>

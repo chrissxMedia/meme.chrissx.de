@@ -1,30 +1,33 @@
 ---
 import { BaseLayout, Footer } from "cmdesigns";
+import Settings from "../components/Settings.astro";
 ---
 
 <BaseLayout lang="en" title="chrissx Meme Generator">
     <noscript>Editing images client-side requires JavaScript.</noscript>
-    <input type="text" id="upper" name="upper" /><br />
-    <input type="text" id="lower" name="lower" /><br />
-    <input type="file" id="rawimage" name="rawimage" /><br />
-    <input type="button" value="update" id="make" /><br />
+    <Settings />
     <canvas id="canvas"></canvas>
     <img id="out" />
     <Footer start={2020} />
 </BaseLayout>
 
 <script>
+    function tryParse(s: string): number | undefined {
+        if ((+s).toString() === s) return +s;
+    }
+
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const imgout = document.getElementById("out") as HTMLImageElement;
     const rawimg = document.getElementById("rawimage") as HTMLInputElement;
-    const upper = document.getElementById("upper") as HTMLInputElement;
-    const lower = document.getElementById("lower") as HTMLInputElement;
+    const upper = document.querySelector("#upper .text") as HTMLInputElement;
+    const lower = document.querySelector("#lower .text") as HTMLInputElement;
+    const upsz = document.querySelector("#upper .size") as HTMLInputElement;
+    const losz = document.querySelector("#lower .size") as HTMLInputElement;
 
     const reader = new FileReader();
     reader.onload = async function () {
-        const dataURL = reader.result;
         const src = new Image();
-        src.src = dataURL;
+        src.src = reader.result;
         await src.decode();
 
         canvas.setAttribute("width", src.width);
@@ -41,10 +44,14 @@ import { BaseLayout, Footer } from "cmdesigns";
             ctx.fillText(s, src.width / 2, y);
         }
 
-        const ufs = (src.width / upper.value.length) * 1.25;
+        const autoupsz = Math.round((src.width / upper.value.length) * 1.25);
+        upsz.placeholder = isFinite(autoupsz) ? autoupsz.toString() : "size";
+        const ufs = tryParse(upsz.value) ?? autoupsz;
         drawText(upper.value.toUpperCase(), ufs, ufs);
 
-        const lfs = (src.width / lower.value.length) * 1.25;
+        const autolosz = Math.round((src.width / lower.value.length) * 1.25);
+        losz.placeholder = isFinite(autolosz) ? autolosz.toString() : "size";
+        const lfs = tryParse(losz.value) ?? autolosz;
         drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
 
         imgout.src = canvas.toDataURL();
@@ -52,20 +59,23 @@ import { BaseLayout, Footer } from "cmdesigns";
     const make = () =>
         rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
     document.getElementById("make")!.addEventListener("click", make);
-    [rawimg, upper, lower].forEach((x) => {
+    [rawimg, upper, lower, upsz, losz].forEach((x) => {
         x.addEventListener("change", make);
     });
 </script>
 
 <style>
-    input {
-        font-family: Impact;
-        font-size: 24px;
-        border-radius: 12px;
+    :global(body) {
+        font-family: var(--impact);
+        width: min(90%, 500px);
+        margin: 0 auto;
+    }
+    :global(input) {
+        font-size: min(24px, 5vw);
+        border-radius: 0.5em;
     }
     img {
-        max-width: 500px;
-        max-height: 500px;
+        width: 100%;
     }
     canvas {
         display: none;

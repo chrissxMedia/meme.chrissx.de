@@ -1,0 +1,19 @@
+---
+import TextProperties from "./TextProperties.astro";
+---
+
+<div>
+    <TextProperties id="upper" placeholder="top" />
+    <TextProperties id="lower" placeholder="bottom text" />
+    <input type="file" id="rawimage" name="rawimage" />
+    <input type="button" value="update" id="make" />
+</div>
+
+<style>
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        margin: 0.5em 0;
+    }
+</style>
