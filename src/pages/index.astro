@@ -23,6 +23,8 @@ import Settings from "../components/Settings.astro";
     const lower = document.querySelector("#lower .text") as HTMLInputElement;
     const upsz = document.querySelector("#upper .size") as HTMLInputElement;
     const losz = document.querySelector("#lower .size") as HTMLInputElement;
+    const upwd = document.querySelector("#upper .width") as HTMLInputElement;
+    const lowd = document.querySelector("#lower .width") as HTMLInputElement;
     const src = new Image();
 
     function render() {
@@ -34,9 +36,14 @@ import Settings from "../components/Settings.astro";
         ctx.strokeStyle = "white";
         ctx.drawImage(src, 0, 0);
 
-        function drawText(s: string, fontSize: number, y: number) {
+        function drawText(
+            s: string,
+            fontSize: number,
+            lineWidth: number,
+            y: number,
+        ) {
             ctx.font = fontSize + "px Impact";
-            ctx.lineWidth = fontSize / 6;
+            ctx.lineWidth = lineWidth;
             ctx.strokeText(s, src.width / 2, y);
             ctx.fillText(s, src.width / 2, y);
         }
@@ -44,19 +51,27 @@ import Settings from "../components/Settings.astro";
         if (upper.value) {
             const autosz = Math.round((src.width / upper.value.length) * 1.25);
             upsz.placeholder = autosz.toString();
-            const ufs = tryParse(upsz.value) ?? autosz;
-            drawText(upper.value.toUpperCase(), ufs, ufs);
+            const sz = tryParse(upsz.value) ?? autosz;
+            const autowd = Math.round(sz / 6);
+            upwd.placeholder = autowd.toString();
+            const wd = tryParse(upwd.value) ?? autowd;
+            drawText(upper.value.toUpperCase(), sz, wd, sz);
         } else {
             upsz.placeholder = "size";
+            upwd.placeholder = "width";
         }
 
         if (lower.value) {
             const autosz = Math.round((src.width / lower.value.length) * 1.25);
             losz.placeholder = autosz.toString();
-            const lfs = tryParse(losz.value) ?? autosz;
-            drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
+            const sz = tryParse(losz.value) ?? autosz;
+            const autowd = Math.round(sz / 6);
+            lowd.placeholder = autowd.toString();
+            const wd = tryParse(lowd.value) ?? autowd;
+            drawText(lower.value.toUpperCase(), sz, wd, src.height - sz / 3);
         } else {
             losz.placeholder = "size";
+            lowd.placeholder = "width";
         }
 
         imgout.src = canvas.toDataURL();
@@ -74,7 +89,7 @@ import Settings from "../components/Settings.astro";
     document.getElementById("make")!.addEventListener("click", make);
     rawimg.addEventListener("change", make);
 
-    [upper, lower, upsz, losz].forEach((x) => {
+    [upper, lower, upsz, losz, upwd, lowd].forEach((x) => {
         x.addEventListener("input", render);
     });
 </script>
