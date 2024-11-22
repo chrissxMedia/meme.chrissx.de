@@ -23,15 +23,12 @@ import Settings from "../components/Settings.astro";
     const lower = document.querySelector("#lower .text") as HTMLInputElement;
     const upsz = document.querySelector("#upper .size") as HTMLInputElement;
     const losz = document.querySelector("#lower .size") as HTMLInputElement;
+    const src = new Image();
 
-    const reader = new FileReader();
-    reader.onload = async function () {
-        const src = new Image();
-        src.src = reader.result;
-        await src.decode();
-
-        canvas.setAttribute("width", src.width);
-        canvas.setAttribute("height", src.height);
+    function render() {
+        if (!src.width || !src.height) return;
+        canvas.setAttribute("width", src.width.toString());
+        canvas.setAttribute("height", src.height.toString());
         const ctx = canvas.getContext("2d")!;
         ctx.textAlign = "center";
         ctx.strokeStyle = "white";
@@ -44,23 +41,41 @@ import Settings from "../components/Settings.astro";
             ctx.fillText(s, src.width / 2, y);
         }
 
-        const autoupsz = Math.round((src.width / upper.value.length) * 1.25);
-        upsz.placeholder = isFinite(autoupsz) ? autoupsz.toString() : "size";
-        const ufs = tryParse(upsz.value) ?? autoupsz;
-        drawText(upper.value.toUpperCase(), ufs, ufs);
+        if (upper.value) {
+            const autosz = Math.round((src.width / upper.value.length) * 1.25);
+            upsz.placeholder = autosz.toString();
+            const ufs = tryParse(upsz.value) ?? autosz;
+            drawText(upper.value.toUpperCase(), ufs, ufs);
+        } else {
+            upsz.placeholder = "size";
+        }
 
-        const autolosz = Math.round((src.width / lower.value.length) * 1.25);
-        losz.placeholder = isFinite(autolosz) ? autolosz.toString() : "size";
-        const lfs = tryParse(losz.value) ?? autolosz;
-        drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
+        if (lower.value) {
+            const autosz = Math.round((src.width / lower.value.length) * 1.25);
+            losz.placeholder = autosz.toString();
+            const lfs = tryParse(losz.value) ?? autosz;
+            drawText(lower.value.toUpperCase(), lfs, src.height - lfs / 3);
+        } else {
+            losz.placeholder = "size";
+        }
 
         imgout.src = canvas.toDataURL();
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function () {
+        src.src = reader.result;
+        await src.decode();
+        render();
     };
+
     const make = () =>
         rawimg.files?.length && reader.readAsDataURL(rawimg.files[0]);
     document.getElementById("make")!.addEventListener("click", make);
-    [rawimg, upper, lower, upsz, losz].forEach((x) => {
-        x.addEventListener("change", make);
+    rawimg.addEventListener("change", make);
+
+    [upper, lower, upsz, losz].forEach((x) => {
+        x.addEventListener("input", render);
     });
 </script>
 
