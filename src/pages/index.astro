@@ -19,6 +19,7 @@ import Settings from "../components/Settings.astro";
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const imgout = document.getElementById("out") as HTMLImageElement;
     const rawimg = document.getElementById("rawimage") as HTMLInputElement;
+    const outputWidth = document.getElementById("output-width") as HTMLInputElement;
     const upper = document.querySelector("#upper .text") as HTMLInputElement;
     const lower = document.querySelector("#lower .text") as HTMLInputElement;
     const upsz = document.querySelector("#upper .size") as HTMLInputElement;
@@ -29,9 +30,13 @@ import Settings from "../components/Settings.astro";
 
     function render() {
         if (!src.width || !src.height) return;
-        canvas.setAttribute("width", src.width.toString());
-        canvas.setAttribute("height", src.height.toString());
+        const width = outputWidth.validity.valid && outputWidth.valueAsNumber > 0
+            ? outputWidth.valueAsNumber
+            : src.width;
+        canvas.width = width;
+        canvas.height = Math.max(1, Math.round(src.height * width / src.width));
         const ctx = canvas.getContext("2d")!;
+        ctx.scale(canvas.width / src.width, canvas.height / src.height);
         ctx.textAlign = "center";
         ctx.strokeStyle = "white";
         ctx.drawImage(src, 0, 0);
@@ -90,7 +95,7 @@ import Settings from "../components/Settings.astro";
     document.getElementById("make")!.addEventListener("click", make);
     rawimg.addEventListener("change", make);
 
-    [upper, lower, upsz, losz, upwd, lowd].forEach((x) => {
+    [upper, lower, upsz, losz, upwd, lowd, outputWidth].forEach((x) => {
         x.addEventListener("input", render);
     });
 </script>
