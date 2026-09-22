@@ -5,7 +5,10 @@ import TextProperties from "./TextProperties.astro";
 <div>
     <TextProperties id="upper" placeholder="top" />
     <TextProperties id="lower" placeholder="bottom text" />
-    <input type="file" id="rawimage" name="rawimage" />
+    <div class="image-inputs">
+        <input type="file" id="rawimage" name="rawimage" />
+        <input type="number" id="output-width" min="1" step="1" placeholder="override width" aria-label="Output width in pixels" />
+    </div>
     <input type="button" value="update" id="make" />
 </div>
 
@@ -15,5 +18,16 @@ import TextProperties from "./TextProperties.astro";
         flex-direction: column;
         gap: 0.5em;
         margin: 0.5em 0;
+    }
+    .image-inputs {
+        flex-direction: row;
+        margin: 0;
+    }
+    #rawimage {
+        flex: 1;
+        min-width: 0;
+    }
+    #output-width {
+        width: 13ch;
     }
 </style>
