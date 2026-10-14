@@ -1,9 +1,9 @@
 ---
-import { BaseLayout, Footer } from "cmdesigns";
+import { BaseLayout, Footer, cmLogoPng } from "cmdesigns";
 import Settings from "../components/Settings.astro";
 ---
 
-<BaseLayout lang="en" title="chrissx Meme Generator">
+<BaseLayout lang="en" title="chrissx Meme Generator" favicon={cmLogoPng}>
     <noscript>Editing images client-side requires JavaScript.</noscript>
     <Settings />
     <canvas id="canvas"></canvas>

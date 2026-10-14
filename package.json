@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "astro": "^7.3.4",
-    "cmdesigns": "^0.1.9"
+    "cmdesigns": "^0.1.10"
   }
 }
